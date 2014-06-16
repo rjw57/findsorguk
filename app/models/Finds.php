@@ -6,8 +6,10 @@
 * @subpackage Abstract
 * @author Daniel Pett dpett @ britishmuseum.org
 * @copyright 2010 - DEJ Pett
+ * @author Mary Chester-Kadwell mchester-kadwell@britishmuseum.org
+ * @copyright 2014 - Mary Chester-Kadwell
 * @license 		GNU General Public License
-* @version 		1
+* @version 		2
 * @since 		22 September 2011
 * @todo needs a complete overhaul. Lots of duplication.
 */
@@ -27,6 +29,61 @@ class Finds extends Pas_Db_Table_Abstract {
 
 	protected $config;
 
+    /** Generates an old_findsID for new find records
+     * @access 	private
+     * @return	string $findid The old_findsID
+     * @throws  Pas_Exception_NotAuthorised
+     */
+    private function generateFindId() {
+        $institution = $this->getInstitution();
+        if(!is_null($institution)) {
+            list($usec, $sec) = explode(" ", microtime());
+            $suffix =  strtoupper(substr(dechex($sec), 3) . dechex(round($usec * 15)));
+            $findid = $institution . '-' . $suffix;
+            return $findid;
+        } else {
+            throw new Pas_Exception_NotAuthorised('Institution missing');
+        }
+    }
+
+    /** Add a new find record
+     * @param array
+     * @return int
+     */
+    public function addFind($insertData){
+        $insertData['secuid'] = $this->generateSecuId();
+        $insertData['old_findID'] = $this->generateFindId();
+        $insertData['secwfstage'] = (int)2;
+        $insertData['institution'] = $this->getInstitution();
+        unset($insertData['recordername']);
+        unset($insertData['finder']);
+        unset($insertData['idBy']);
+        unset($insertData['id2by']);
+        unset($insertData['secondfinder']);
+
+        return $this->add($insertData);
+    }
+
+    /** Edit a find record
+     * @param
+     * @return
+     */
+    public function editFind($updateData, $id){
+        $id2by = $updateData['id2by'];
+        if($id2by === "" || is_null($id2by)){
+            $updateData['identifier2ID'] = NULL;
+        }
+        unset($updateData['recordername']);
+        unset($updateData['finder']);
+        unset($updateData['idBy']);
+        unset($updateData['id2by']);
+        unset($updateData['secondfinder']);
+
+        $where[0] = $this->getAdapter()->quoteInto('id = ?', $id);
+
+        return $this->update($updateData, $where);
+
+    }
 
 	/** Get a find id for the jquery autocomplete
 	* @param string $q the query for the find number

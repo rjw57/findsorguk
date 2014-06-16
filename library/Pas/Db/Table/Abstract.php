@@ -4,11 +4,13 @@
  * @category	Pas
  * @package		Pas_Db_Table_
  * @subpackage	Abstract
- * @version		1
+ * @version		2
  * @since		22nd September 2011
  * @license		GNU General Public License
-* @author 		Daniel Pett dpett @ britishmuseum.org
-* @copyright 	2010 - DEJ Pett
+ * @author Daniel Pett dpett @ britishmuseum.org
+ * @copyright 2010 - DEJ Pett
+ * @author Mary Chester-Kadwell mchester-kadwell@britishmuseum.org
+ * @copyright 2014 - Mary Chester-Kadwell
  *
  */
 class Pas_Db_Table_Abstract
@@ -19,6 +21,10 @@ class Pas_Db_Table_Abstract
 	public $_cache;
 
 	public $_auth;
+
+    const  DBASE_ID = 'PAS';
+
+    const  SECURE_ID = '001';
 
 	public function __construct(){
 	$this->_config	= Zend_Registry::get('config');
@@ -53,6 +59,39 @@ class Pas_Db_Table_Abstract
 	$dateTime = Zend_Date::now()->toString('yyyy-MM-dd HH:mm:ss');
 	return $dateTime;
 	}
+
+    /** Get the institution of the user
+     * @access 	protected
+     * @uses 	Pas_User_Details
+     * @return  array
+     * @throws Pas_Exception_BadJuJu
+     */
+    protected function getInstitution(){
+        $user = new Pas_User_Details();
+        $person = $user->getPerson();
+        if($person){
+            return $person->institution;
+        } else {
+            throw new Pas_Exception_BadJuJu('No user credentials found', 500);
+        }
+    }
+
+    /** Generates a secuid for various types of new records
+     * @access 	public
+     * @uses	Pas_GenerateSecuID
+     * @return	string $secuid The secuID
+     */
+    protected function generateSecuId() {
+        list($usec, $sec) = explode(" ", microtime());
+        $ms = dechex(round($usec * 4080));
+        while(strlen($ms) < 3) {
+            $ms = '0' . $ms;
+        }
+        $secuid = strtoupper(self::DBASE_ID . dechex($sec) . self::SECURE_ID . $ms);
+
+        return $secuid;
+    }
+
 
 	/** Add the data to the model
 	 * @access public

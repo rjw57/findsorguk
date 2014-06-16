@@ -4,7 +4,10 @@
 * @category   Pas
 * @package    Pas_Controller
 * @subpackage ActionAdmin
-* @copyright  Copyright (c) 2011 DEJ Pett dpett @ britishmuseum . org
+ * @author Daniel Pett dpett @ britishmuseum.org
+ * @copyright 2010 - DEJ Pett
+ * @author Mary Chester-Kadwell mchester-kadwell@britishmuseum.org
+ * @copyright 2014 - Mary Chester-Kadwell
 * @license    GNU General Public License
 */
 class Database_ArtefactsController extends Pas_Controller_Action_Admin {
@@ -233,130 +236,106 @@ class Database_ArtefactsController extends Pas_Controller_Action_Admin {
     }
 
     /** Add an object
-     * @todo slim down action, move logic for adding to finds.php model
+     *
     */
     public function addAction() {
-    $user = $this->_helper->identity->getPerson();
-    if((is_null($user->peopleID) && is_null($user->canRecord)) 
-    || (!is_null($user->peopleID) && is_null($user->canRecord)) ){
-    $this->_redirect('/error/accountproblem');
-    }
-    $last = $this->_getParam('copy');
-    $this->view->secuid = $this->secuid();
-    $form = new FindForm();
-    $form->submit->setLabel('Save record');
-    $form->old_findID->setValue($this->FindUid());
-    $form->secuid->setValue($this->secuid());
-    if(isset($user->peopleID)){
-    $form->recorderID->setValue($user->peopleID);
-    $form->recordername->setValue($user->fullname);
-    $form->identifier1ID->setValue($user->peopleID);
-    $form->idBy->setValue($user->fullname);
-    }
-    if(in_array($user->role,$this->_restricted)) {
-    $form->finderID->setValue($user->peopleID);
-    $form->removeDisplayGroup('discoverers');
-    $form->removeElement('finder');
-    $form->removeElement('secondfinder');
-    $form->removeElement('idBy');
-    $form->recordername->setAttrib('disabled', true);
-    $form->removeElement('id2by');
-    }
-    $this->view->form = $form;
-    if($last == 'last') {
-    $finddata = $this->_finds->getLastRecord($this->getIdentityForForms());
-    foreach($finddata as $finddataflat){
-    $form->populate($finddataflat);
-    if(isset($user->peopleID)){
-    $form->recorderID->setValue($user->peopleID);
-    $form->recordername->setValue($user->fullname);
-    }
-    }
-    }
-    if($this->getRequest()->isPost() && $form->isValid($this->_request->getPost())) 	 {
-    if ($form->isValid($form->getValues())) {
-    $insertData = $form->getValues();
-    $insertData['secuid'] = $this->secuid();
-    $insertData['old_findID'] = $this->FindUid();
-    $insertData['secwfstage'] = (int)2;
-    $insertData['institution'] = $this->getInstitution();
-    unset($insertData['recordername']);
-    unset($insertData['finder']);
-    unset($insertData['idBy']);
-    unset($insertData['id2by']);
-    unset($insertData['secondfinder']);
-    $insert = $this->_finds->add($insertData);
-    $this->_helper->solrUpdater->update('beowulf', $insert);
-    $this->_redirect(self::REDIRECT . 'record/id/' . $insert);
-    $this->_flashMessenger->addMessage('Record created!');
-    } else  {
-    $this->_flashMessenger->addMessage('Please check and correct errors!');
-    $form->populate($form->getValues());
-    }
-    }
+        $user = $this->_user;
+        if(is_null($user->peopleID) || is_null($user->canRecord)){
+            $this->_redirect('/error/accountproblem');
+        }
+        $form = new FindForm();
+        $form->submit->setLabel('Save record');
+        if(isset($user->peopleID)){
+            $form->recorderID->setValue($user->peopleID);
+            $form->recordername->setValue($user->fullname);
+            $form->identifier1ID->setValue($user->peopleID);
+            $form->idBy->setValue($user->fullname);
+        }
+        if(in_array($user->role,$this->_restricted)) {
+            $form->finderID->setValue($user->peopleID);
+            $form->removeDisplayGroup('discoverers');
+            $form->removeElement('finder');
+            $form->removeElement('secondfinder');
+            $form->removeElement('idBy');
+            $form->recordername->setAttrib('disabled', true);
+            $form->removeElement('id2by');
+        }
+
+        $this->view->form = $form;
+
+        $last = $this->_getParam('copy');
+        if($last == 'last') {
+            $finddata = $this->_finds->getLastRecord($this->getIdentityForForms());
+            foreach($finddata as $finddataflat) {
+                $form->populate($finddataflat);
+                if(isset($user->peopleID)){
+                    $form->recorderID->setValue($user->peopleID);
+                    $form->recordername->setValue($user->fullname);
+                }
+            }
+        }
+        if($this->getRequest()->isPost() && $form->isValid($this->_request->getPost())) {
+            $insertData = $form->getValues();
+            if ($form->isValid($insertData)) {
+                $insert = $this->_finds->addFind($insertData);
+
+                $this->_helper->solrUpdater->update('beowulf', $insert);
+                $this->_redirect(self::REDIRECT . 'record/id/' . $insert);
+                $this->_flashMessenger->addMessage('Record created!');
+            } else  {
+                $this->_flashMessenger->addMessage('Please check and correct errors!');
+                $form->populate($insertData);
+            }
+        }
     }
     /** Edit a record
      *
-     * @todo move update logic to model finds.php
+     *
     */
     public function editAction() {
-    if($this->_getParam('id',false)){
-	$user = $this->getAccount();
-    $form = new FindForm();
-    $form->submit->setLabel('Update record');
-    $this->view->form = $form;
-    if(in_array($this->getRole(),$this->_restricted)) {
-    $form->removeDisplayGroup('discoverers');
-    $form->removeElement('finder');
-    $form->finderID->setValue($user->peopleID);
-    $form->removeElement('secondfinder');
-    $form->removeElement('idBy');
-    $form->recordername->setAttrib('disabled', true);
-    $form->removeElement('id2by');
-    }
-    if($this->getRequest()->isPost() && $form->isValid($this->_request->getPost())) 	 {
-    $data = $form->getValues();
-    if ($form->isValid($form->getValues())) {
-    $updateData = $form->getValues();
-//    $updateData = array_filter($updateData);
-    $id2by = $form->getValue('id2by');
-    if($id2by === "" || is_null($id2by)){
-    $updateData['identifier2ID'] = NULL;
-    }
-    unset($updateData['recordername']);
-    unset($updateData['finder']);
-    unset($updateData['idBy']);
-    unset($updateData['id2by']);
+        $id = $this->_getParam('id',false);
+        if($id){
+            $form = new FindForm();
+            $form->submit->setLabel('Update record');
+            $this->view->form = $form;
 
-    unset($updateData['secondfinder']);
-    $oldData = $this->_finds->fetchRow('id=' . $this->_getParam('id'))->toArray();
-    $where = array();
-    $where[] = $this->_finds->getAdapter()->quoteInto('id = ?', $this->_getParam('id'));
-    $this->_finds->update($updateData, $where);
-    $this->_helper->audit($updateData, $oldData, 'FindsAudit',  $this->_getParam('id'),
-    	$this->_getParam('id'));
-    $this->_helper->solrUpdater->update('beowulf', $this->_getParam('id'));
-    $this->_flashMessenger->addMessage('Artefact information updated and audited!');
-    $this->_redirect(self::REDIRECT . 'record/id/' . $this->_getParam('id'));
-    } else {
-    $this->view->find = $this->_finds->fetchRow('id='.$this->_getParam('id'));
-    $form->populate($data);
-    }
-    } else {
-    $id = (int)$this->_request->getParam('id', 0);
-    if ($id > 0) {
-    $formData = $this->_finds->getEditData($id);
-    if(count($formData)){
-    $form->populate($formData['0']);
-    $this->view->find = $this->_finds->fetchRow('id='.$id);
-    } else {
-            throw new Pas_Exception_Param($this->_nothingFound);
-    }
-    }
-    }
-    } else {
-            throw new Pas_Exception_Param($this->_missingParameter);
-    }
+            $user = $this->getAccount();
+            if(in_array($this->getRole(),$this->_restricted)) {
+                $form->removeDisplayGroup('discoverers');
+                $form->removeElement('finder');
+                $form->finderID->setValue($user->peopleID);
+                $form->removeElement('secondfinder');
+                $form->removeElement('idBy');
+                $form->recordername->setAttrib('disabled', true);
+                $form->removeElement('id2by');
+            }
+            if($this->getRequest()->isPost()) {
+                $formData = $this->_request->getPost();
+                if ($form->isValid($formData)) {
+                    $updateData = $form->getValues();
+                    $oldData = $this->_finds->fetchRow('id=' . $id)->toArray();
+                    $update = $this->_finds->editFind($updateData, $id);
+
+                    $this->_helper->audit($updateData, $oldData, 'FindsAudit',  $id, $id);
+                    $this->_helper->solrUpdater->update('beowulf', $id);
+                    $this->_flashMessenger->addMessage('Artefact information updated and audited!');
+                    $this->_redirect(self::REDIRECT . 'record/id/' . $id);
+                } else {
+                    $form->populate($formData);
+                }
+            } else {
+                if ($id) {
+                    $formData = $this->_finds->getEditData($id);
+                    if(count($formData)){
+                        $form->populate($formData['0']);
+                    } else {
+                        throw new Pas_Exception_Param($this->_nothingFound);
+                    }
+                }
+            }
+        } else {
+                throw new Pas_Exception_Param($this->_missingParameter);
+        }
     }
 
     /** Delete a record
