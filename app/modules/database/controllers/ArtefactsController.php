@@ -283,7 +283,7 @@ class Database_ArtefactsController extends Pas_Controller_Action_Admin {
                     $this->_helper->solrUpdater->update('beowulf', $insert);
                     $this->_redirect(self::REDIRECT . 'record/id/' . $insert);
                     $this->_flashMessenger->addMessage('Record created!');
-                } else { // If there is a database error (not duplicate ID), repopulate form so users don't lose their work
+                } else { // If there is a database error, repopulate form so users don't lose their work
                     $this->_flashMessenger->addMessage('Database error. Please try submitting again or contact support.');
                     $form->populate($formData);
                 }
