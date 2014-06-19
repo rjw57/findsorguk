@@ -29,6 +29,8 @@ class Finds extends Pas_Db_Table_Abstract {
 
 	protected $config;
 
+    const DUPLICATE_UNIQUE_VALUE_ERROR_CODE = 23000;
+
     /** Generates an old_findsID for new find records
      * @access 	private
      * @return	string $findid The old_findsID
@@ -61,7 +63,19 @@ class Finds extends Pas_Db_Table_Abstract {
         unset($insertData['id2by']);
         unset($insertData['secondfinder']);
 
-        return $this->add($insertData);
+        try {
+            $insert = $this->add($insertData);
+        } catch(Zend_Db_Exception $e) {
+            $code = $e->getCode();
+            // If there is a duplicate unique value, generates a new old_findsID and tries again
+            if($code == self::DUPLICATE_UNIQUE_VALUE_ERROR_CODE) {
+                $insertData['old_findID'] = $this->generateFindId();
+                $insert = $this->add($insertData);
+            } else { // Any other Zend_Db_Exception
+                $insert = 'error';
+            }
+        }
+        return $insert;
     }
 
     /** Edit a find record

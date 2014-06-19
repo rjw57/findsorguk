@@ -274,20 +274,26 @@ class Database_ArtefactsController extends Pas_Controller_Action_Admin {
                 }
             }
         }
-        if($this->getRequest()->isPost() && $form->isValid($this->_request->getPost())) {
-            $insertData = $form->getValues();
-            if ($form->isValid($insertData)) {
+        if($this->getRequest()->isPost()) {
+            $formData = $this->_request->getPost();
+            if ($form->isValid($formData)) {
+                $insertData = $form->getValues();
                 $insert = $this->_finds->addFind($insertData);
-
-                $this->_helper->solrUpdater->update('beowulf', $insert);
-                $this->_redirect(self::REDIRECT . 'record/id/' . $insert);
-                $this->_flashMessenger->addMessage('Record created!');
+                if ($insert != 'error'){
+                    $this->_helper->solrUpdater->update('beowulf', $insert);
+                    $this->_redirect(self::REDIRECT . 'record/id/' . $insert);
+                    $this->_flashMessenger->addMessage('Record created!');
+                } else { // If there is a database error (not duplicate ID), repopulate form so users don't lose their work
+                    $this->_flashMessenger->addMessage('Database error. Please try submitting again or contact support.');
+                    $form->populate($formData);
+                }
             } else  {
                 $this->_flashMessenger->addMessage('Please check and correct errors!');
-                $form->populate($insertData);
+                $form->populate($formData);
             }
         }
     }
+
     /** Edit a record
      *
      *
