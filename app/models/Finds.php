@@ -63,19 +63,28 @@ class Finds extends Pas_Db_Table_Abstract {
         unset($insertData['id2by']);
         unset($insertData['secondfinder']);
 
-        try {
-            $insert = $this->add($insertData);
-        } catch(Zend_Db_Exception $e) {
-            $code = $e->getCode();
-            // If there is a duplicate unique value, generates a new old_findsID and tries again
-            if($code == self::DUPLICATE_UNIQUE_VALUE_ERROR_CODE) {
-                $insertData['old_findID'] = $this->generateFindId();
+        $i = 2;
+        while ($i > 0){
+            try {
                 $insert = $this->add($insertData);
-            } else { // Any other Zend_Db_Exception
-                $insert = 'error';
+                break;
+            } catch(Zend_Db_Exception $e) {
+                $code = $e->getCode();
+                // If there is a duplicate unique value, generates a new old_findsID and tries again up to twice
+                if($code == self::DUPLICATE_UNIQUE_VALUE_ERROR_CODE) {
+                    usleep(100000); // Delays generation of new old_findsID to prevent further duplicate generation
+                    $insertData['old_findID'] = $this->generateFindId();
+                    $i--;
+                } else { // Any other Zend_Db_Exception
+                    break;
+                }
             }
         }
-        return $insert;
+        if(isset($insert)){
+            return $insert;
+        } else {
+            return 'error';
+        }
     }
 
     /** Edit a find record
