@@ -45,8 +45,8 @@ class Pas_View_Helper_TreasureReportsMenu
         $html .= ' ">';
         $html .= '<a href="';
         $html .= $this->view->url(array(
-            'module' => 'treasure',
-            'controller' => 'reports',
+            'module' => 'publications',
+            'controller' => 'treasure',
             'action' => 'index',
             'slug' => $t['slug']),
             'treps', true);

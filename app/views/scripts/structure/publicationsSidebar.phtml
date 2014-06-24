@@ -6,19 +6,19 @@
         <li <?php echo $this->currentPage()->active('publications','index','index');?>>
             <a href="<?php echo $this->url(array('module' => 'publications'),'default',true);?>" title="Introduction to our publications">Our publications</a></li>
         
-        <li <?php if($controller == 'reports' && $action == 'annual') { echo 'class="expandfirst active"';};?>>
-            <a href="#"><i class="icon-folder-open"></i>Scheme Annual reports</a>
+        <li <?php if($controller == 'annual') { echo 'class="expandfirst"';};?>>
+            <a href="#"><i class="icon-folder-open"></i>Annual reports</a>
             <ul class="nav nav-pills nav-stacked menuindent">
-                <?php echo $this->menu('publications','reports','index','reps');?></ul></li>
+                <?php echo $this->menu('publications','annual','index','areps');?></ul></li>
         
-        <li <?php if($controller == 'reports' && $action == 'treasure') { echo 'class="expandfirst"';};?> >
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst"';};?> >
             <a href="#"><i class="icon-folder-open"></i>Treasure Reports</a>
                 <ul class="nav nav-pills nav-stacked menuindent"><?php echo $this->treasureReportsMenu();?></ul></li>
         
         <li <?php if($controller == 'reviews') { echo 'class="expandfirst"';};?>>
             <a href="#"><i class="icon-folder-open"></i>Commissioned reviews</a>
             <ul class="nav nav-pills nav-stacked menuindent"><?php
-            echo $this->menu('publications','reviews','index','r');?></ul></li>
+            echo $this->menu('publications','reviews','index','revs');?></ul></li>
         
         <li <?php echo $this->currentPage()->active('publications','research','index');?>>
             <a href="<?php echo $this->url(array('module' => 'publications','controller' => 'research'),'default',true);?>" title="Our research publication output">Research publications</a></li>

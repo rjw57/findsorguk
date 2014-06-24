@@ -17,7 +17,7 @@ class Publications_ReviewsController extends Pas_Controller_Action_Admin {
 		$this->_helper->acl->allow('public',null);
 	}
 	
-	/** Render index pages
+	/** Render reviews pages
 	*/ 
 	public function indexAction() {
 	 	$content = new Content();
