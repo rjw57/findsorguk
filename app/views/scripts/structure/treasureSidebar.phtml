@@ -3,18 +3,80 @@
 <div class="sidebar-nav col-md-3" >
     <ul  id="menu1" class="nav nav-stacked nav-pills collapsible menu">
         <li <?php echo $this->currentPage()->active('treasure','index','index');?>>
-            <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'index'),'default',true);?>" title="An introduction to the Treasure Act">Introduction</a></li>
-        
-        <?php echo $this->treasureMenu();?>
-        
-        <li <?php if($controller == 'reports') { echo 'class="expandfirst "';};?> >
-            <a href="#"><i class="icon-folder-open"></i>Treasure Reports</a>
-            <ul class="nav nav-pills nav-stacked menuindent"><?php echo $this->TreasureReportsMenu();?></ul></li>
-        
-        <li <?php echo $this->currentPage()->active('treasure','cases','index');?>>
-            <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'cases'),'default',true);?>" title="Case history">Cases</a></li>
-        
-        <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
-            <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="TVC minutes">TVC Minutes</a></li>
+            <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'index'),'default',true);?>" title="An introduction to the Treasure Act">Reporting Treasure</a>
+        </li>
+
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst "';};?>>
+            <a href="#"><i class="icon-folder-open"></i>What is Treasure?</a>
+            <ul class="nav nav-pills nav-stacked menuindent">
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Summary of Treasure Act 1996</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Treasure on archaeological projects</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Pierced coins</a></li>
+            </ul>
+        </li>
+
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst "';};?>>
+            <a href="#"><i class="icon-folder-open"></i>The Treasure Process</a>
+            <ul class="nav nav-pills nav-stacked menuindent">
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Discovery and reporting</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Report for the Coroner</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Conservation and analysis</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Museum interest</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Writing to the Coroner</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Coroner's inquests</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Valuation and reward</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Acquisition and closure</a></li>
+            </ul>
+        </li>
+
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst "';};?>>
+            <a href="#"><i class="icon-folder-open"></i>Treasure valuation</a>
+            <ul class="nav nav-pills nav-stacked menuindent">
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">When your finds are declared Treasure</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Treasure Valuation Committee</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="TVC minutes">Treasure Valuation Committee minutes</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="TVC minutes">Provisional valuers</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','cases','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'cases'),'default',true);?>" title="Case history">Cases</a></li>
+            </ul>
+        </li>
+
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst "';};?>>
+            <a href="#"><i class="icon-folder-open"></i>Treasure acquisition</a>
+            <ul class="nav nav-pills nav-stacked menuindent">
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Advice for museums</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">National funding bodies</a></li>
+            </ul>
+        </li>
+
+        <li <?php if($controller == 'treasure') { echo 'class="expandfirst "';};?>>
+            <a href="#"><i class="icon-folder-open"></i>Buying and exporting</a>
+            <ul class="nav nav-pills nav-stacked menuindent">
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">The Scheme and eBay</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Advice on buying antiquities</a></li>
+                <li <?php echo $this->currentPage()->active('treasure','minutes','index');?>>
+                    <a href="<?php echo $this->url(array('module' => 'treasure','controller' => 'minutes'),'default',true);?>" title="Summary of Treasure Act 1996">Export licenses</a></li>
+            </ul>
+        </li>
+<!--        --><?php //echo $this->treasureMenu();?>
     </ul>
 </div>
