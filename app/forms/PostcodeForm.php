@@ -34,7 +34,8 @@ class PostcodeForm extends Pas_Form {
 	$q->setLabel('Search content: ')
 		->setRequired(true)
 		->addFilters(array('StripTags','StringTrim'))
-		->setAttribs(array('size' =>  20, 'class' => 'postcode'));
+		->setAttribs(array('size' =>  20, 'class' => 'postcode', 'placeholder' => 'Try for example WC1B 3DG'))
+                ->setDescription('Enter a postcode with the space between the segments (England and Wales only)');
 
         $thumbnail = new Zend_Form_Element_Checkbox('thumbnail');
         $thumbnail->setLabel('Only with images?')
@@ -49,7 +50,6 @@ class PostcodeForm extends Pas_Form {
                 ->addMultiOptions(array(
                     1 => '1 km', 2 => '2km',3 => '3km',
                     4 => '4km', 5 => '5km'))
-		->setDescription('Distance in KM')
                 ->addValidator('Int');
 
 	$submit = new Zend_Form_Element_Submit('submit');
