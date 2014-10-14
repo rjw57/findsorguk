@@ -50,7 +50,7 @@ xsi:schemaLocation="http://www.heritage-standards.org.uk/midas/schema/2.0 http:/
 			<holder>The Portable Antiquities Scheme</holder>
 		</copyright>
 		<accessrights>
-			<conditions>CC BY-SA</conditions>
+			<conditions>CC BY</conditions>
 		</accessrights>
 		<reproductionrights>
 				<statement></statement>
